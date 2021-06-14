@@ -174,20 +174,23 @@ updateuserInfo(user) {
     pdf.addImage(imgData, 0, 0, canvas.width, canvas.height);
 	pdf.save(pdfname);
 	this.saveUserFormData();
-	 /*
+	 
 	 // we can send PDF file from angular app to node APP
 	 // and then we will download the file in server.
 	const uploadData = new FormData();
 	var blob = pdf.output('blob');
-	uploadData.append('pdf', blob , this.refId + "_"+ this.clientName);
-	this.adressVerificationService.uploadSingleFile('http://localhost:3008/api/file-upload',uploadData).subscribe( (data:any) => {
+	uploadData.append('pdf', blob , this.username+ "_"+ this.refId + "_"+ this.clientName);
+	uploadData.append('refId', this.refId);
+	uploadData.append('username', this.username);
+	uploadData.append('clientname', this.clientName);
+	this.adressVerificationService.uploadSingleFile('http://localhost:3008/api/sendmail_fileupload',uploadData).subscribe( (data:any) => {
 		console.log('file saved on server succesfully !');
   	});
-  */
-	this.resetForm();
-	localStorage.clear();
-	alert('Thank you, Your Information has sent Successfully !):');
-	this._router.navigate(['/login']);
+  
+	//this.resetForm();
+	//localStorage.clear();
+	//alert('Thank you, Your Information has sent Successfully !):');
+	//this._router.navigate(['/login']);
     return true;
   }
 
