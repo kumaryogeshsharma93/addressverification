@@ -1,0 +1,186 @@
+.digitalVerification{
+    position: relative;
+    margin-top: 87px;
+}
+
+hr{
+    background: #000;
+    height: 1px;
+}
+.userOutput span{
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #000;
+}
+label, option{
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #000; 
+}
+select option{
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #000; 
+}
+.digitalVerification h4 {
+    font-size: 20px;
+    text-align: center;
+    padding: 7px 0px;
+    letter-spacing: 1px;
+    word-spacing: 2px;
+    font-weight: 800;
+}
+
+form {
+    border: 2px solid #fff;
+    padding: 20px 25px;
+    border-radius: 4px;
+}
+/* .card {
+    box-shadow: 0 0 20px rgb(115 115 115 / 75%);
+} */
+input[type="date"]::before { 
+    content: attr(data-placeholder);
+    width: 100%;
+}
+
+/* hide our custom/fake placeholder text when in focus to show the default
+ * 'mm/dd/yyyy' value and when valid to show the users' date of birth value.
+ */
+input[type="date"]:focus::before,
+input[type="date"]:valid::before { display: none }
+h4 {
+    font-size: 20px;
+}
+input, textarea,select {
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0px;
+}
+.form-control,textarea,select:focus {
+    color: #000;
+    background-color: #fff;
+    border-color: #000;
+    outline: 0;
+    box-shadow: none;
+    padding: 0px;
+}
+.cardContent{
+    padding: 10px 20px;
+}
+
+select#inlineFormCustomSelect {
+    padding: 0px;
+}
+
+input#adhaarFront {
+    position: relative;
+    padding: 35px 0px;
+}
+input#adhaarBack {
+    position: relative;
+    padding: 35px 0px;
+}
+input#Bill {
+    position: relative;
+    padding: 35px 0px;
+}
+
+.buttonCustom {
+    border: 1px solid #2bbef1;
+    color: #fff;
+    padding: 10px 55px;
+    border-radius: 5px;
+    background: #2bbef1;
+    cursor: pointer;
+}
+.buttonCustom :hover {
+    background-color: #fff;
+    padding: 10px 45px;
+    border-radius: 5px;
+    color: #1d2329;
+    border-color: #fff;
+    transition: background-color .3s linear 0s,color 50ms linear 50ms;
+}
+/*Floting Css*/
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-control-placeholder {
+    position: absolute;
+    top: 10px;
+    padding: 7px 0 0 13px;
+    transition: all 200ms;
+    opacity: 0.5;
+    left: -15px;
+  }
+  
+  .form-control:focus + .form-control-placeholder,
+  .form-control:valid + .form-control-placeholder {
+    transform: translate3d(0, -100%, 0);
+    opacity: 1;
+    font-size: 10px !important;
+  }
+  .pointer a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    display: block;
+    margin-top: 0px;
+}
+
+.updateBorder {
+    border: 1px solid #000;
+}
+
+.updateCanvas {
+    position: relative;
+    top: -40px;
+}
+.showError {
+    color: red;
+    position: relative;
+    top: 0px;
+}
+.imageResponsive {
+    height: 225px;
+    
+}
+/* Media Query Start*/
+@media only screen and (max-width: 600px) {
+    form {
+        border: 2px solid #fff;
+        padding: 15px 5px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+    
+    .imageResponsive {
+        width: 100% !important;
+        height: 200px !important;
+    }
+
+    button.btn.btn-primary {
+        width: 100%;
+        margin-top: 20px;
+        background: #012c3c;
+        border: 1px solid #012c3c;
+    }
+    
+}
+
+  /* iPad Landscape */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    .updateCompany {
+        margin-top: 15px;
+    }
+}
+
+agm-map {
+    height: 300px;
+  }
+.fadeFields {
+    opacity: 0.3;
+}

@@ -1,0 +1,11 @@
+.footerSection {
+    background: #012c3c;
+    color: #fff;
+    padding: 15px 15px;
+    text-align: center;
+}
+
+.footerSection p {
+    position: relative;
+    top: 8px;
+}
