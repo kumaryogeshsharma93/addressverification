@@ -1,7 +1,7 @@
 import {Component, Input, ViewChild, OnInit, HostListener, ElementRef}
- from '@angular/core';
- import {HttpHeaders } from '@angular/common/http';
- import {SignaturePad}
+from '@angular/core';
+import {HttpHeaders } from '@angular/common/http';
+import {SignaturePad}
 from 'angular2-signaturepad';
 import {jsPDF} from "jspdf"
 import * as html2canvas from "html2canvas";
@@ -90,7 +90,7 @@ export class HomeComponent implements OnInit {
 
 	drawStart() {
 		// will be notified of szimek/signature_pad's onBegin event
-		console.log('begin drawing');
+		// console.log('Capture drawing');
 	}
 
 	dataURLtoFile(dataurl, filename) {
@@ -110,7 +110,6 @@ export class HomeComponent implements OnInit {
     
 
 	saveUserFormData() {
-		
 			   const form = new FormData();
                form.append("refId",this.refId);
                form.append("clientName",this.clientName);
@@ -121,7 +120,8 @@ export class HomeComponent implements OnInit {
                form.append("durationDate",this.durationDate);
                form.append("durationStay",this.durationStay);
                form.append("residence",this.inlineFormCustomSelect);
-			   console.log(this.inlineFormCustomSelect);
+			   form.append("address",this.address);
+			   form.append("inlineFormCustomSelect",this.inlineFormCustomSelect);
 			   form.append("lat",this.lat);
 			   form.append("lon",this.lon);
                form.append("adhaarFront",this.urlOne);  // type file
@@ -132,7 +132,7 @@ export class HomeComponent implements OnInit {
                form.append("Signature",this.img); // type file
 				let url ="InsertEmpDetails";
 				this.adressVerificationService.callpostUrl(url,form).subscribe( (data:any) => {
-					console.log('success form submit');
+					console.log('Successfully Information Submit');
 				
 			});
 
@@ -174,7 +174,6 @@ updateuserInfo(user) {
     pdf.addImage(imgData, 0, 0, canvas.width, canvas.height);
 	pdf.save(pdfname);
 	this.saveUserFormData();
-	 
 	 // we can send PDF file from angular app to node APP
 	 // and then we will download the file in server.
 	const uploadData = new FormData();
@@ -183,14 +182,15 @@ updateuserInfo(user) {
 	uploadData.append('refId', this.refId);
 	uploadData.append('username', this.username);
 	uploadData.append('clientname', this.clientName);
+	/*
 	this.adressVerificationService.uploadSingleFile('http://localhost:3008/api/sendmail_fileupload',uploadData).subscribe( (data:any) => {
 		console.log('file saved on server succesfully !');
   	});
-  
-	//this.resetForm();
-	//localStorage.clear();
-	//alert('Thank you, Your Information has sent Successfully !):');
-	//this._router.navigate(['/login']);
+  */
+	this.resetForm();
+	localStorage.clear();
+	alert('Thank you, Your Information has sent Successfully !):');
+	this._router.navigate(['/login']);
     return true;
   }
 
@@ -236,7 +236,7 @@ updateuserInfo(user) {
 
 	getLocation(loc: boolean) {
 		this.location = loc;
-		console.log('this.location ' + this.location);
+		// console.log('this.location ' + this.location);
 	}
 
 	getuserCordinates(cordinate : string) {

@@ -69,14 +69,14 @@
                  <div class="col-md-6 col-sm-12">
                     <div class="form-group">
                        <input type="date" name="durationDate" class="form-control" [(ngModel)]= "durationDate" [ngClass]="!location?'fadeFields':''" [disabled]="!location" required aria-required="true" />
-                       <label for="durationDate" class="form-control-placeholder">Duration Date:</label>
+                       <label for="durationDate" class="form-control-placeholder">Duration From Date:</label>
                        <span class="showError" *ngIf="signuperrordata.durationDate">Duration Date is Required </span>
                     </div>
                  </div>
                  <div class="col-md-6 col-sm-12">
                     <div class="form-group">
                        <input type="date" name="durationStay" [(ngModel)]= "durationStay" class="form-control" [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required aria-required="true" />
-                       <label  for="durationStay" class="form-control-placeholder">Duration to Stay:</label>
+                       <label  for="durationStay" class="form-control-placeholder">Duration To Stay:</label>
                        <span class="showError" *ngIf="signuperrordata.durationStay">Duration to Stay is Required </span>
                     </div>
                  </div>
@@ -130,7 +130,7 @@
                </div>
                <div class="col-md-6 col-sm-12">
                   <input type="checkbox" [(ngModel)]="userconsent" name="userconsent">
-                     <label for="vehicle1">&nbsp;&nbsp; I agree that all the provide by me are correct.</label><br>
+                     <label for="vehicle1">&nbsp;&nbsp; I agree that all the provided details by me are correct.</label><br>
                      <span class="showError" *ngIf="signuperrordata.userconsent">Please Select Checkbox</span>
                      <br>
                      <button type="button" (click)="resetSign()" [ngClass]="!location?'fadeFields':''" [disabled]="!location" class="buttonCustom">Reset Sign</button>   &nbsp;        
