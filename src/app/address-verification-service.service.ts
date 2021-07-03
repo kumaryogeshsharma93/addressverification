@@ -27,7 +27,15 @@ export class AddressVerificationServiceService {
    callgetUrl(url){
      return this.http.get(this.apiurl+""+url);
   }
+
+  callgetMapImg(url){
+   return this.http.get(url);
+  }
   
+  LatLanData(url){
+   return this.http.get(url);
+}
+
   submitSignUp(url,postdata) {
      return this.http.post<any>(this.apiurl+""+url, postdata)
      .pipe(catchError(this.errorHandler))

@@ -2,23 +2,37 @@
   <div class="digitalVerification">
      <h4>Welcome to Digital Address Verification</h4>
   </div>
-  <div class="row">
+  <div class="row" [ngClass]="progressBar?'fadeFields':''">
      <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card" >
            <form action="#" >
             <div class="row">
                <div class="col-md-6 col-sm-12">
                   <div class="form-group userOutput">
-                     <span>Ref ID : {{refId}}</span>
+                     <span>Ref ID: {{refId}}</span>
                      <hr>
                       <!-- <label class="form-control-placeholder" for="refId"></label>  -->
                   </div>
                </div>
                <div class="col-md-6 col-sm-12">
                   <div class="form-group userOutput">
-                     <span>Client Name : {{clientName}}</span>
+                     <span>Client Name: {{clientName}}</span>
                      <hr>
                   </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-6 col-sm-12">
+                  <div class="form-group userOutput">
+                   <span>State  Name: {{state}}</span>
+                   <hr>
+                  </div>
+               </div>
+               <div class="col-md-6 col-sm-12">
+                  <div class="form-group userOutput">
+                   <span>City  Name: {{city}}</span>
+                   <hr>
+                </div>
                </div>
             </div>
               <div class="row">
@@ -61,49 +75,54 @@
                      <select [(ngModel)]= "inlineFormCustomSelect" name="inlineFormCustomSelect" class="custom-select mr-sm-2" class="form-control select-select" [ngClass]="!location?'fadeFields':''" [disabled]="!location">
                         <option *ngFor="let residence of residenceTypes"  [value]="residence.name" >{{residence.name}}</option>
                      </select>
-                     <span class="showError" *ngIf="signuperrordata.inlineFormCustomSelect">Residence Type is Required </span>
+                     <span class="showError showError2" *ngIf="signuperrordata.inlineFormCustomSelect">Residence Type is Required </span>
                   </div>
                </div>
             </div>
               <div class="row">
                  <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                       <input type="date" name="durationDate" class="form-control" [(ngModel)]= "durationDate" [ngClass]="!location?'fadeFields':''" [disabled]="!location" required aria-required="true" />
+                       <input type="date" name="durationDate" class="form-control" [(ngModel)]= "durationDate" [ngClass]="!location?'fadeFields':''" [disabled]="!location" required/>
                        <label for="durationDate" class="form-control-placeholder">Duration From Date:</label>
-                       <span class="showError" *ngIf="signuperrordata.durationDate">Duration Date is Required </span>
+                       <span class="showError showError2" *ngIf="signuperrordata.durationDate">Duration Date is Required </span>
                     </div>
                  </div>
                  <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                       <input type="date" name="durationStay" [(ngModel)]= "durationStay" class="form-control" [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required aria-required="true" />
+                       <input type="date" name="durationStay" [(ngModel)]= "durationStay" class="form-control" [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required/>
+                       <!-- aria-required="true"  -->
                        <label  for="durationStay" class="form-control-placeholder">Duration To Stay:</label>
-                       <span class="showError" *ngIf="signuperrordata.durationStay">Duration to Stay is Required </span>
+                       <span class="showError showError2" *ngIf="signuperrordata.durationStay">Duration to Stay is Required </span>
                     </div>
                  </div>
               </div>
               <div class="row">
                  <div class="col-md-6 col-sm-2">
-                    <div class="form-group">        
+                    <div class="form-group">   
+                     <label [ngClass]="!location?'fadeFields':''" class="changeLable" for="adhaarFront">Upload ID Proof Front Side:</label>     
                        <input  type="file" name="adhaarFront" [(ngModel)]="adhaarFront" class="form-control" (change)="onSelectFile1($event)" #myInput1 [ngClass]="!location?'fadeFields':''" [disabled]="!location" required>
-                       <label [ngClass]="!location?'fadeFields':''" class="" for="adhaarFront">Upload ID Proof Front Side:</label>
+                       
                        <span *ngIf="adhaarFront">{{adhaarFront}}</span>
                        <img [src]="urlOne" class="imageResponsive"> 
                        <span class="showError" *ngIf="signuperrordata.adhaarFront">ID Proof Front is Required</span>
+                       
                     </div>
                  </div>
                  <div class="col-md-6 col-sm-2">
-                    <div class="form-group">        
+                    <div class="form-group">   
+                     <label [ngClass]="!location?'fadeFields':''" class="changeLable" for="adhaarBack">Upload ID proof Back Side:</label>     
                        <input type="file" name="adhaarBack" [(ngModel)]="adhaarBack" class="form-control" (change)="onSelectFile2($event)" #myInput2 [ngClass]="!location?'fadeFields':''" [disabled]="!location" required>
-                       <label [ngClass]="!location?'fadeFields':''" class="" for="adhaarBack">Upload ID proof Back Side:</label>
+                       
                        <img [src]="urlTwo" class="imageResponsive"> 
                        <span class="showError" *ngIf="signuperrordata.adhaarBack">ID Proof Back Side is Required</span>
+                       <!-- <div class="userLocationWithMap">{{latLangAddress}}</div> -->
                     </div>
                  </div>
-              </div><br>
+              </div>
               <div class="row">
                  <div class="col-md-6 col-sm-2">
                     <div class="form-group"> 
-                     <label [ngClass]="!location?'fadeFields':''" class="" for="bill">Upload Utility bill</label>
+                     <label [ngClass]="!location?'fadeFields':''" class="changeLable" for="bill">Upload Utility Bill:</label>
                        <input type="file" [(ngModel)]="bill" name="bill" class="form-control" (change)="onSelectFile3($event)" #myInput3 [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required>
                        <img [src]="urlThree" class="imageResponsive"> 
                        <span class="showError" *ngIf="signuperrordata.bill">Utility bill is Required</span>
@@ -111,16 +130,16 @@
                  </div>
                  <div class="col-md-6 col-sm-2">
                   <div class="form-group"> 
-                     <label [ngClass]="!location?'fadeFields':''" class="" for="homeImages">Upload Home Images</label>
-                     <input type="file" [(ngModel)]="homeImages" name="homeImages" class="form-control" (change)="onSelectFile4($event)" #myInput3 [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required>
+                     <label [ngClass]="!location?'fadeFields':''" class="changeLable" for="homeImages">Upload Home Images:</label>
+                     <input type="file" [(ngModel)]="homeImages" name="homeImages" class="form-control" (change)="onSelectFile4($event)" #myInput4 [ngClass]="!location?'fadeFields':''" [disabled]="!location"  required>
                      <img [src]="urlFour" class="imageResponsive"> 
                      <span class="showError" *ngIf="signuperrordata.homeImages">Upload Home Image is Required</span>
                   </div>
                </div>
-              </div><br>
+              </div>
               <div class="row">
                <div class="col-md-6 col-sm-2">
-                  <div class="updateCanvas"> <label [ngClass]="!location?'fadeFields':''" class="form-control-placeholder">Signature</label>
+                  <div class="updateCanvas"> <label [ngClass]="!location?'fadeFields':''" class="form-control-placeholder updateSign">Signature This Box</label>
                   </div>
                   <span class="showError" *ngIf="signuperrordata.signature">Signature is Required</span>
                     <div class="updateBorder" [ngClass]="!location?'fadeFields':''">
@@ -133,8 +152,8 @@
                      <label for="vehicle1">&nbsp;&nbsp; I agree that all the provided details by me are correct.</label><br>
                      <span class="showError" *ngIf="signuperrordata.userconsent">Please Select Checkbox</span>
                      <br>
-                     <button type="button" (click)="resetSign()" [ngClass]="!location?'fadeFields':''" [disabled]="!location" class="buttonCustom">Reset Sign</button>   &nbsp;        
-                  <button type="button" (click)="saveandSend()" [ngClass]="!location?'fadeFields':''" [disabled]="!location" class="buttonCustom">Submit Details</button>
+                     <button type="button" (click)="resetSign()" [ngClass]="!location?'fadeFields':''" [disabled]="!location" class="buttonCustom">Reset Signature</button>   &nbsp;        
+                  <button type="button" (click)="saveandSend()" [ngClass]="!location?'fadeFields':''" [disabled]="isSubButtonEnable" class="buttonCustom">Submit Details</button>
                </div>
             </div><br>
              
@@ -144,8 +163,9 @@
   </div>
   <div #mapContent [ngClass]="!location?'fadeFields':''">
    <app-userlocation (locationEvent)="getLocation($event)"  (cordinateEvent)="getuserCordinates($event)"></app-userlocation>
-  </div>
-  
+   <!-- <img [src]="urlFive" class="imageResponsive d-none">  -->
+  </div> 
 </div>
-
-
+<div *ngIf="progressBar" class="progressBar">
+   <img src="assets/images/loading2.gif">
+</div>

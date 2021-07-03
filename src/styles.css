@@ -12,10 +12,18 @@ body {
 	
 }
 
+.supportMail a {
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+
+	text-decoration: none;
+	position: relative;
+}
 @media only screen and (max-width: 600px) {
 	canvas{
 		width: 100% !important;
-		height: 125px !important;
+		height: 150px !important;
 	}
 	.digitalVerification h4 {
 		font-size: 14px !important;
@@ -27,5 +35,13 @@ body {
 	input.ng-untouched.ng-pristine.ng-valid {
 		position: relative;
 		top: 24px;
+	}
+	.imageResponsive{
+		width: 100% !important;
+		height: auto !important;
+	}
+	.progressBar img {
+		width: 100% !important;
+	
 	}
 }

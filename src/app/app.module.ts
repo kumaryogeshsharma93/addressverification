@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 import { LogInFormComponent } from './log-in-form/log-in-form.component';
 import {HttpClientModule} from '@angular/common/http';
 import { AddressVerificationServiceService } from './address-verification-service.service';
+import {NgxImageCompressService} from 'ngx-image-compress';
+// Import ng-circle-progress
+import { NgCircleProgressModule } from 'ng-circle-progress';
 //import { ToastrModule } from 'ngx-toastr';
 //import { ToastNotificationsModule} from 'ngx-toast-notifications'
 // "ngx-toast-notifications": "^1.3.0",
@@ -37,7 +40,18 @@ declare var $: any;
       apiKey: 'AIzaSyBZ6nfhjzenF9LRwbUQUxHKfwPLmGnEffs'
     }),
     SignaturePadModule,
-    BrowserAnimationsModule // required animations module
+    BrowserAnimationsModule,
+     // Specify ng-circle-progress as an import
+     NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 300,
+    })
+    // required animations module
     // ToastrModule.forRoot({ 
     //   timeOut: 30000,
     //   positionClass: 'top-center',
@@ -45,7 +59,7 @@ declare var $: any;
     // }),
     // ToastNotificationsModule
   ],
-  providers: [AddressVerificationServiceService],
+  providers: [AddressVerificationServiceService, NgxImageCompressService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

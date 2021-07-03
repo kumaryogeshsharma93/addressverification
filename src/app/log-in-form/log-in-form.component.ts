@@ -14,6 +14,9 @@ export class LogInFormComponent implements OnInit {
  
     }
     login(){
+
+      var phoneno = /^\d{10}$/;
+  if((this.contact.match(phoneno))) {
     let url = 'Login';
     const uploadData = new FormData();
     uploadData.append('contact', this.contact);;
@@ -23,10 +26,15 @@ export class LogInFormComponent implements OnInit {
         localStorage.setItem('contact', this.contact);
         this._router.navigate(['/home']);
       }else{
-        alert('Please Provide Valid Mobile Number');
+        alert('Please Enter Your Registered Mobile Number.');
       }
      // console.log(data);
 
     });
+  } else{
+    alert('Please Provide Valid Mobile Number.');
+  }
+
+    
     }
 }

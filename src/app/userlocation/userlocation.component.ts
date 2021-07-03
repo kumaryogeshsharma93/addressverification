@@ -39,8 +39,8 @@ export class UserlocationComponent implements OnInit {
     this.lon = position.coords.longitude;
     let cordinates = this.lat + "_" + this.lon;
     this.cordinateEvent.emit(cordinates);
-    console.log('position.coords.latitude '+position.coords.latitude);
-    console.log('position.coords.longitude '+position.coords.longitude);
+    // console.log('position.coords.latitude '+position.coords.latitude);
+    // console.log('position.coords.longitude '+position.coords.longitude);
 
   }
 

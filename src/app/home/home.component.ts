@@ -1,13 +1,14 @@
 import {Component, Input, ViewChild, OnInit, HostListener, ElementRef}
 from '@angular/core';
 import {HttpHeaders } from '@angular/common/http';
-import {SignaturePad}
-from 'angular2-signaturepad';
+import {SignaturePad}from 'angular2-signaturepad';
 import {jsPDF} from "jspdf"
 import * as html2canvas from "html2canvas";
 //import html2canvas from 'hmtl2canvas'
 import {AddressVerificationServiceService} from '../address-verification-service.service';
+import {NgxImageCompressService} from 'ngx-image-compress';
 import { Router } from '@angular/router';
+
 declare var $: any;
 
 @Component({
@@ -20,10 +21,14 @@ export class HomeComponent implements OnInit {
 	urlTwo = '';
 	urlThree = '';
 	urlFour = '';
+	urlFive;
+	modifiledImgUrl;
 	img;
 	refId: any;
 	clientName: any;
 	username: any;
+	state: any;
+	city: any; 
 	contact: any;
 	dateOfBirth: any;
 	father: any;
@@ -40,38 +45,38 @@ export class HomeComponent implements OnInit {
 	residence: any;
 	contactData : any;
 	userconsent:boolean;
-
+	progressBar : boolean = false;
+	isSubButtonEnable : boolean = true;
+	LatLanDataShow : any;
+	
 	location: boolean = false; //Changing Code 
+	progressBarHide: boolean = false; //Changing Code 
 	@ViewChild(SignaturePad) signaturePad: SignaturePad;
 
-	@ViewChild('myInput1')
-	myInputVariable1: ElementRef;
+	@ViewChild('myInput1')myInputVariable1: ElementRef;
 
-	@ViewChild('myInput2')
-	myInputVariable2: ElementRef;
+	@ViewChild('myInput2')myInputVariable2: ElementRef;
 
-	@ViewChild('myInput3')
-	myInputVariable3: ElementRef;
+	@ViewChild('myInput3')myInputVariable3: ElementRef;
+	@ViewChild('myInput4')myInputVariable4: ElementRef;
+	
 
-	@ViewChild('pdfContent')
-	htmlElementRef: ElementRef;
+	@ViewChild('pdfContent')htmlElementRef: ElementRef;
+	@ViewChild('mapContent')htmlElementRef2: ElementRef;
 
-	@ViewChild('mapContent')
-	htmlElementRef2: ElementRef;
 
 	accElement: HTMLDivElement;
  	finaldata: any = [];
  	lat;
  	lon;
-	 
-	 aadharFrontFile: File ;
-	 aadharBackFile: File ;
-	 utilityBillFile: File ;
-	 homeImageFile: File ;
+	aadharFrontFile: File ;
+	aadharBackFile: File ;
+	utilityBillFile: File ;
+	homeImageFile: File ;
+	latLangAddress : string;
 
-	constructor(private adressVerificationService:AddressVerificationServiceService, private _router: Router) {}
-
-	
+	constructor(private adressVerificationService:AddressVerificationServiceService, private _router: Router,
+		private imgCompress: NgxImageCompressService) {}
 	ngAfterViewInit() {
 		// this.signaturePad is now available
 		this.signaturePad.set('minWidth', 5); // set szimek/signature_pad options at runtime
@@ -110,6 +115,8 @@ export class HomeComponent implements OnInit {
     
 
 	saveUserFormData() {
+
+		this.progressBar = true;
 			   const form = new FormData();
                form.append("refId",this.refId);
                form.append("clientName",this.clientName);
@@ -124,18 +131,42 @@ export class HomeComponent implements OnInit {
 			   form.append("inlineFormCustomSelect",this.inlineFormCustomSelect);
 			   form.append("lat",this.lat);
 			   form.append("lon",this.lon);
+			   form.append("latLangAddress",this.latLangAddress);
                form.append("adhaarFront",this.urlOne);  // type file
                form.append("adhaarBack",this.urlTwo); // type file
                form.append("bill",this.urlThree); // type file
                form.append("homeImages",this.urlFour); // type file
+			   form.append("mapImage",this.urlFive); // type file
 			   var file = this.dataURLtoFile(this.img,'Signature');
                form.append("Signature",this.img); // type file
 				let url ="InsertEmpDetails";
 				this.adressVerificationService.callpostUrl(url,form).subscribe( (data:any) => {
-					console.log('Successfully Information Submit');
-				
-			});
+			    	console.log('Successfully Information Submit'+ data);
+					this.successMsg();
+			},(error)=> {
+				this.errorMsg(error);
+				this.progressBar = false;
+				this.isSubButtonEnable = false;
+			}, () => {
 
+			}
+			
+			);
+
+	}
+
+	errorMsg(error) {
+		console.log(error);
+		alert('Error Occured while submitting information:');
+	}
+
+	successMsg() {
+		this.progressBar = false;
+			this.resetForm();
+			localStorage.clear();
+			alert('Thank you, Your Information has sent Successfully !:');
+			this.isSubButtonEnable = false;
+			this._router.navigate(['/login']);
 	}
 
 	//Location Code Start
@@ -152,9 +183,12 @@ export class HomeComponent implements OnInit {
 			this.adressVerificationService.callpostUrl(url,uploadData).subscribe( (data:any) => {
 				this.finaldata = JSON.parse(data) ;
 				this.updateuserInfo(this.finaldata[0]);
-		});
+	});
 	}
+	
+
 }
+
 updateuserInfo(user) {
 		let userInfo = user;
 		this.refId = userInfo.refID;
@@ -164,6 +198,8 @@ updateuserInfo(user) {
 		this.dateOfBirth = userInfo.DOB;
 		this.address = userInfo.currentAddress;
 		this.contact = userInfo.Mobile; 
+		this.state = userInfo.state;
+		this.city = userInfo.city; 
  }
 
   savePdf(canvas){
@@ -172,7 +208,7 @@ updateuserInfo(user) {
     var pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
     var imgData = canvas.toDataURL("image/jpeg", 1.0);
     pdf.addImage(imgData, 0, 0, canvas.width, canvas.height);
-	pdf.save(pdfname);
+	//pdf.save(pdfname);
 	this.saveUserFormData();
 	 // we can send PDF file from angular app to node APP
 	 // and then we will download the file in server.
@@ -187,27 +223,28 @@ updateuserInfo(user) {
 		console.log('file saved on server succesfully !');
   	});
   */
-	this.resetForm();
-	localStorage.clear();
-	alert('Thank you, Your Information has sent Successfully !):');
-	this._router.navigate(['/login']);
-    return true;
+	
+    //return true;
   }
 
 	saveandSend()
 	{
     // save with html2canvas into pdf
+	this.isSubButtonEnable = true;
 	this.validateUserForm();
 	if (this.flag) {
+	
       const options = {
         proxy: "server.js",
         useCORS: true,
       };
 		let DATA = this.htmlElementRef.nativeElement;
 			(html2canvas as any)(document.body, options).then(canvas => {
-        		let isPdf = this.savePdf(canvas);
+        		this.savePdf(canvas);
         		
 			});
+		} else{
+			this.isSubButtonEnable = false;
 		}
 	}
 
@@ -236,6 +273,8 @@ updateuserInfo(user) {
 
 	getLocation(loc: boolean) {
 		this.location = loc;
+		this.isSubButtonEnable = !this.location;
+		// console.log(this.location);
 		// console.log('this.location ' + this.location);
 	}
 
@@ -244,7 +283,33 @@ updateuserInfo(user) {
 		corArr = cordinate.split("_");
 		this.lat = corArr[0];
 		this.lon = corArr[1];
-	
+		var url = "https://maps.googleapis.com/maps/api/staticmap?center="+this.lat+","+this.lon+"&zoom=12&size=600x400&key=AIzaSyBZ6nfhjzenF9LRwbUQUxHKfwPLmGnEffs";
+		var url2 = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+this.lat+","+this.lon+"&key=AIzaSyBZ6nfhjzenF9LRwbUQUxHKfwPLmGnEffs"
+
+		var dataObjArr;
+		this.adressVerificationService.LatLanData(url2).subscribe( data => {
+			dataObjArr = data;
+			// console.log(dataObjArr.results[0].formatted_address);
+			this.latLangAddress = dataObjArr.results[0].formatted_address;
+			// console.log(this.latLangAddress);
+		});
+
+		var canvas=document.createElement('canvas');
+		var context = canvas.getContext('2d');
+		var imageObj = new Image();
+		imageObj.crossOrigin = "crossOrigin";  // This enables CORS 
+		var datatimpurl; 
+		imageObj.onload = function() {
+		 canvas.width=imageObj.width;
+		 canvas.height=imageObj.height;
+		  context.drawImage(imageObj, 0, 0,imageObj.width,imageObj.height);
+		  var dataurl=canvas.toDataURL('image/png');
+		  datatimpurl = dataurl;
+		};
+		imageObj.src = url;
+		setTimeout( () => {
+			this.urlFive = datatimpurl;// here... this has different context
+		 }, 2500);
 	}
 
 	public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
@@ -253,49 +318,111 @@ updateuserInfo(user) {
 		'canvasHeight': 150
 	};
 
-
-
-
-
 	//Location Code End
 	//File Upload
 	onSelectFile1(event) {
 		if (event.target.files && event.target.files[0]) {
-			
 			var reader = new FileReader();
 			const file = event.target.files[0];
-			//this.adhaarFront = file.name;
+			const filesize = file.size; 
+			const fileSizeInKB = Math.round(filesize / 1024);
 			if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png') {
-				this.aadharFrontFile = event.target.files[0];
-				reader.readAsDataURL(event.target.files[0]); // read file as data url
-				reader.onload = (event: any) => { // called once readAsDataURL is completed
-					this.urlOne = event.target.result;
-					
-				}
+					this.aadharFrontFile = event.target.files[0];
+					reader.readAsDataURL(event.target.files[0]); // read file as data url
+					reader.onload = (event: any) => { // called once readAsDataURL is completed
+						this.urlOne = event.target.result;
+						if(fileSizeInKB > 650) {
+						this.compressFile1(this.urlOne);
+					  }
+					}
 			} else {
+				this.urlOne="";
 				this.myInputVariable1.nativeElement.value = "";
 				alert(' please upload any of the given valid file type : jpeg,jpg,png');
 			}
-
 		}
 	}
+
+	compressFile1(image) {
+	  var orientation = -1;
+	  this.imgCompress
+		.compressFile(image, orientation, 60, 60)
+		.then((result) => {
+		  this.urlOne = result;	
+		});
+	}
+	 compressFile2(image) {
+		var orientation = -1;
+		this.imgCompress
+		  .compressFile(image, orientation, 60, 60)
+		  .then((result) => {
+			this.urlTwo = result;
+		  });
+	  }
+
+	  compressFile3(image) {
+		var orientation = -1;
+		this.imgCompress
+		  .compressFile(image, orientation, 60, 60)
+		  .then((result) => {
+			this.urlThree = result;	
+		  });
+	  }
+
+	  compressFile4(image) {
+		var orientation = -1;
+		this.imgCompress
+		  .compressFile(image, orientation, 60, 60)
+		  .then((result) => {
+			this.urlFour = result;	
+		  });
+	  }
+
 	// File Uploader 2
 	onSelectFile2(event) {
 		if (event.target.files && event.target.files[0]) {
 			var reader = new FileReader();
 			const file = event.target.files[0];
+			const filesize = file.size; 
+			const fileSizeInKB = Math.round(filesize / 1024);
 			//this.adhaarBack = file.name;
 			if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png') {
 				this.aadharBackFile = event.target.files[0];
 				reader.readAsDataURL(event.target.files[0]); // read file as data url
 				reader.onload = (event: any) => { // called once readAsDataURL is completed
 					this.urlTwo = event.target.result;
+					if(fileSizeInKB > 650) {
+					this.compressFile2(this.urlTwo);
+				}
 				}
 			} else {
+				this.urlTwo="";
 				this.myInputVariable2.nativeElement.value = "";
 				alert(' please upload any of the given valid file type : jpeg,jpg,png');
 			}
 		}
+	}
+
+	createNewImg(imgurl) {
+		var canvas=document.createElement('canvas');
+		var context = canvas.getContext('2d');
+		var imageObj = new Image();
+		imageObj.crossOrigin = "crossOrigin";  // This enables CORS 
+		var datatimpurl; 
+		var address = this.latLangAddress;
+		imageObj.onload = function() {
+		 canvas.width=imageObj.width;
+		 canvas.height=imageObj.height;
+		  context.drawImage(imageObj, 0, 0,imageObj.width,imageObj.height);
+		  context.font = "20px Calibri";
+    	  context.fillText(address, 100, 200);
+		  var dataurl=canvas.toDataURL('image/png');
+		  datatimpurl = dataurl;
+		};
+		imageObj.src = imgurl;
+		setTimeout( () => {
+			this.modifiledImgUrl = datatimpurl;
+			}, 1500);
 	}
 
 	// File Uploader 3
@@ -303,37 +430,44 @@ updateuserInfo(user) {
 		if (event.target.files && event.target.files[0]) {
 			var reader = new FileReader();
 			const file = event.target.files[0];
-			if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png') {
+			const filesize = file.size; 
+			const fileSizeInKB = Math.round(filesize / 1024);
 				this.utilityBillFile = event.target.files[0];
 				reader.readAsDataURL(event.target.files[0]); // read file as data url
 				reader.onload = (event: any) => { // called once readAsDataURL is completed
 					this.urlThree = event.target.result;
+					if(fileSizeInKB > 650) {
+					this.compressFile3(this.urlThree);
+				}
 				}
 			} else {
+				this.urlThree="";
 				this.myInputVariable3.nativeElement.value = "";
 				alert(' please upload any of the given valid file type : jpeg,jpg,png');
 			}
 		}
-	}
-
-
 	//Image file check
 
 	onSelectFile4(event) {
 		if (event.target.files && event.target.files[0]) {
 			var reader = new FileReader();
 			const file = event.target.files[0];
+			const filesize = file.size; 
+			const fileSizeInKB = Math.round(filesize / 1024);
 			if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png') {
 				this.homeImageFile = event.target.files[0];
 				reader.readAsDataURL(event.target.files[0]); // read file as data url
 				reader.onload = (event: any) => { // called once readAsDataURL is completed
 					this.urlFour = event.target.result;
+					if(fileSizeInKB > 650) {
+					this.compressFile4(this.urlFour);
+				  }
 				}
 			} else {
-				this.myInputVariable1.nativeElement.value = "";
+				this.urlFour="";
+				this.myInputVariable4.nativeElement.value = "";
 				alert(' please upload any of the given valid file type : jpeg,jpg,png');
 			}
-
 		}
 	}
 
@@ -362,7 +496,7 @@ updateuserInfo(user) {
 		if (this.durationDate != null) {
 			this.signupdata.durationDate = this.durationDate.trim();
 		}
-		if (this.inlineFormCustomSelect != null) {
+		if (this.inlineFormCustomSelect != null || this.inlineFormCustomSelect != "") {
 			this.signupdata.inlineFormCustomSelect = this.inlineFormCustomSelect.trim();
 		}
 		if (this.urlOne != null) {
@@ -388,7 +522,8 @@ updateuserInfo(user) {
 		this.trimSignUpFormData();
 		this.initErrorFormData();
 		this.flag = true;
-		if (this.signupdata.durationDate == "" || this.signupdata.durationStay == "" || this.signupdata.inlineFormCustomSelect == "" || this.signupdata.adhaarFront == "" || this.signupdata.adhaarBack == "" || this.signupdata.bill == "" || this.signupdata.homeImages == "" || this.img == "" || this.img == null || this.userconsent == false) {
+		if (this.signupdata.durationDate == "" || this.signupdata.durationStay == "" || this.signupdata.inlineFormCustomSelect == "" || this.signupdata.adhaarFront == "" || this.signupdata.adhaarBack == "" || this.signupdata.bill == "" || this.signupdata.homeImages == "" || this.img == "" || this.img == null || this.userconsent == false ||
+		this.userconsent == undefined  || this.signupdata.inlineFormCustomSelect == 'Select Residence Type') {
 			this.flag = false;
 			if (this.signupdata.durationDate == "") {
 				this.signuperrordata.durationDate = true;
@@ -458,6 +593,8 @@ signupdata = {
 	refId: "",
 	clientName: "",
 	username: "",
+	state: "",
+	city: "",
 	contact: "",
 	dateOfBirth: "",
 	father: "",
@@ -488,6 +625,8 @@ resetForm() {
 	this.refId = "";
 	this.clientName = "";
 	this.username = "";
+	this.state = "";
+	this.city = "";
 	this.contact = "";
 	this.father = "";
 	this.durationDate = "";
